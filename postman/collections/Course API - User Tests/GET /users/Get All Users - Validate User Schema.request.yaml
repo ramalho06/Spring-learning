@@ -1,0 +1,44 @@
+$kind: http-request
+name: Get All Users - Validate User Schema
+method: GET
+url: '{{baseUrl}}/users'
+order: 2000
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("Each user has required fields", function () {
+          const users = pm.response.json();
+          pm.expect(users).to.be.an('array');
+
+          if (users.length > 0) {
+              users.forEach(function(user) {
+                  pm.expect(user).to.have.property('id');
+                  pm.expect(user).to.have.property('name');
+                  pm.expect(user).to.have.property('email');
+                  pm.expect(user).to.have.property('phone');
+              });
+          }
+      });
+
+      pm.test("User IDs are numbers", function () {
+          const users = pm.response.json();
+          if (users.length > 0) {
+              users.forEach(function(user) {
+                  pm.expect(user.id).to.be.a('number');
+              });
+          }
+      });
+
+      pm.test("Password is not exposed in response", function () {
+          const users = pm.response.json();
+          if (users.length > 0) {
+              users.forEach(function(user) {
+                  pm.expect(user).to.not.have.property('password');
+              });
+          }
+      });
+    language: text/javascript

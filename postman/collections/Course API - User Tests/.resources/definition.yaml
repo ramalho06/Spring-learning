@@ -1,0 +1,5 @@
+$kind: collection
+name: Course API - User Tests
+variables:
+  - key: baseUrl
+    value: 'http://localhost:8080'
