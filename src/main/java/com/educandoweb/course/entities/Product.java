@@ -17,13 +17,16 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String Description;
+    private String description;
     private Double price;
     private String imgUrl;
 
     @ManyToMany
     @JoinTable(name = "td_product_category", joinColumns = @JoinColumn(name = "product_id") , inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories = new HashSet<>();
+    private final Set<Category> categories = new HashSet<>();
+
+    @OneToMany(mappedBy = "id.product")
+    private Set<OrderItem> items = new HashSet<>();
 
     public Product() {
     }
@@ -31,7 +34,7 @@ public class Product implements Serializable {
     public Product(Long id, String name, String description, double price, String imgUrl) {
         this.id = id;
         this.name = name;
-        Description = description;
+        this.description = description;
         this.price = price;
         this.imgUrl = imgUrl;
     }
@@ -53,11 +56,11 @@ public class Product implements Serializable {
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        description = description;
     }
 
     public double getPrice() {
@@ -78,6 +81,14 @@ public class Product implements Serializable {
 
     public Set<Category> getCategories() {
         return categories;
+    }
+
+    public Set<Order> getOrders(){
+        Set<Order> set = new HashSet<>();
+        for(OrderItem x: items){
+            set.add(x.getOrder());
+        }
+        return set;
     }
 
     @Override
