@@ -2,6 +2,7 @@ package com.educandoweb.course.services;
 
 import com.educandoweb.course.entities.User;
 import com.educandoweb.course.repositories.UserRepository;
+import org.aspectj.apache.bcel.generic.RET;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,5 +28,9 @@ public class UserService {
 
     public User insert(User user){
         return repository.save(user);
+    }
+
+    public void delete(Long id){
+         repository.deleteById(id);
     }
 }
