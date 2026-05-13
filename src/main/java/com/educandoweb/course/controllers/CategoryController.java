@@ -1,8 +1,7 @@
-package com.educandoweb.course.resources;
+package com.educandoweb.course.controllers;
 
 import com.educandoweb.course.entities.Category;
 import com.educandoweb.course.services.CategoryService;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,11 +12,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/categories")
-public class CategoryResources {
+public class CategoryController {
 
     private CategoryService service;
     
-    public CategoryResources(CategoryService service) {
+    public CategoryController(CategoryService service) {
         this.service = service;
     }
 

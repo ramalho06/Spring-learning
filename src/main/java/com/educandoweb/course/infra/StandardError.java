@@ -1,4 +1,4 @@
-package com.educandoweb.course.resources.exceptions;
+package com.educandoweb.course.infra;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

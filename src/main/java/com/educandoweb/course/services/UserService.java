@@ -1,9 +1,12 @@
 package com.educandoweb.course.services;
 
+import com.educandoweb.course.dto.UserPutRequest;
+import com.educandoweb.course.dto.UserRequest;
+import com.educandoweb.course.dto.UserResponse;
 import com.educandoweb.course.entities.User;
 import com.educandoweb.course.repositories.UserRepository;
-import com.educandoweb.course.services.exceptions.DatabaseException;
-import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
+import com.educandoweb.course.infra.exceptions.DatabaseException;
+import com.educandoweb.course.infra.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -21,8 +24,8 @@ public class UserService {
         this.repository = repository;
     }
 
-    public List<User> findAll(){
-        return repository.findAll();
+    public List<UserResponse> findAll(){
+        return repository.findAll().stream().map(UserResponse::new).toList();
     }
 
     public User findById(Long id){
@@ -30,8 +33,8 @@ public class UserService {
         return obj.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
-    public User insert(User user){
-        return repository.save(user);
+    public User insert(UserRequest user){
+        return repository.save(new User(null, user.name(), user.email(), user.phone(), user.password()));
     }
 
     public void delete(Long id){
@@ -45,28 +48,32 @@ public class UserService {
 
     }
 
-    public User update(Long id, User obj){
+    public User update(UserPutRequest obj){
         try {
-            User entity = repository.getReferenceById(id);
+            var entity = repository.getReferenceById(obj.id());
             updateData(entity, obj);
             return repository.save(entity);
         } catch (EntityNotFoundException e){
-            throw new ResourceNotFoundException(id);
+            throw new ResourceNotFoundException(obj.id());
         }
 
     }
 
-    private void updateData(User entity, User obj) {
-        if(obj.getName() != null){
-            entity.setName(obj.getName());
+    private void updateData(User entity, UserPutRequest obj) {
+        if(obj.name() != null){
+            entity.setName(obj.name());
         }
 
-        if(obj.getEmail() != null){
-            entity.setEmail(obj.getEmail());
+        if(obj.email() != null){
+            entity.setEmail(obj.email());
         }
 
-        if (obj.getPhone() != null){
-            entity.setPhone(obj.getPhone());
+        if (obj.phone() != null){
+            entity.setPhone(obj.phone());
+        }
+
+        if (obj.password() != null){
+            entity.setPassword(obj.password());
         }
 
     }
